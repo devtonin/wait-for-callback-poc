@@ -1,0 +1,13 @@
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+
+# Visual Studio Code
+.vscode
+.factorypath
+
+# Local environment
+.env
+.venv

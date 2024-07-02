@@ -1,0 +1,49 @@
+{
+  "Comment": "This state machine demonstrates wait for callback functionality",
+  "StartAt": "Charge contract client",
+  "States": {
+    "Charge contract client": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage.waitForTaskToken",
+      "Parameters": {
+        "QueueUrl": "xpto-queue-456",
+        "MessageBody": {
+          "contractId": "1234567",
+          "clientId": "987656",
+          "contractDate": "2024-01-14",
+          "amount": 100,
+          "myTaskToken.$": "$$.Task.Token"
+        }
+      },
+      "Next": "Notify Success",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Notify Failure",
+          "Comment": "If any error encountered while waiting"
+        }
+      ],
+      "ResultPath": null
+    },
+    "Notify Success": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Message": "$",
+        "TopicArn": "xpto-topic-123"
+      },
+      "End": true
+    },
+    "Notify Failure": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Message": "$",
+        "TopicArn": "xpto-topic-123"
+      },
+      "End": true
+    }
+  }
+}
